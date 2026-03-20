@@ -30,7 +30,7 @@ void OutputNumbers(const unsigned char* numbers, const unsigned int size) {
 void NThBitCount(vector<int> &C, const vector<unsigned char> &input, const int n) {
 	const unsigned char mask = 1 << n;
 	for (const unsigned char i : input) {
-		C[i & mask >> n]++;
+		C[(i & mask) >> n]++;
 	}
 }
 
@@ -48,8 +48,15 @@ void NThBitCountingSort(const vector<unsigned char> &input, vector<unsigned char
 	unsigned int i = input.size();
 	do {
 		i--;
-		output[--C[input[i] & mask >> n]] = input[i];
+		output[--C[(input[i] & mask) >> n]] = input[i];
 	} while (i > 0);
+}
+
+void BinaryRadixSort(vector<unsigned char> &input, vector<unsigned char> &output) {
+	for (int i = 0; i < 8; i++) {
+		NThBitCountingSort(input, output, i);
+		input = output;
+	}
 }
 
 int main(const int argc, const char* argv[]) {
@@ -62,7 +69,7 @@ int main(const int argc, const char* argv[]) {
 	}
 	B.resize(A.size());
 
-	NThBitCountingSort(A, B, 0);
+	BinaryRadixSort(A, B);
 
 	OutputNumbers(&B[0],B.size());
 	return 0;
