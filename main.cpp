@@ -42,17 +42,28 @@ void NThBitCountingSort(const vector<unsigned char> &input, vector<unsigned char
 	}
 	vector C = {0, 0};
 	NThBitCount(C, input, n);
+	C[1] += C[0];
+
+	const unsigned char mask = 1 << n;
+	unsigned int i = input.size();
+	do {
+		i--;
+		output[--C[input[i] & mask >> n]] = input[i];
+	} while (i > 0);
 }
 
 int main(const int argc, const char* argv[]) {
-	vector<unsigned char> I;
+	vector<unsigned char> A, B;
 	if (argc != 2) {
 		return 0;
 	}
-	if (!ReadNumbers(I, argv[1])) {
+	if (!ReadNumbers(A, argv[1])) {
 		return 0;
 	}
+	B.resize(A.size());
 
-	OutputNumbers(&I[0],I.size());
+	NThBitCountingSort(A, B, 0);
+
+	OutputNumbers(&B[0],B.size());
 	return 0;
 }
