@@ -27,6 +27,23 @@ void OutputNumbers(const unsigned char* numbers, const unsigned int size) {
 		output << static_cast<int>(numbers[i]) << ' ';
 }
 
+void NThBitCount(vector<int> &C, const vector<unsigned char> &input, const int n) {
+	const unsigned char mask = 1 << n;
+	for (const unsigned char i : input) {
+		C[i & mask >> n]++;
+	}
+}
+
+void NThBitCountingSort(const vector<unsigned char> &input, vector<unsigned char> &output, const int n) {
+	// fewer than 2 elements don't need to be sorted
+	if (input.size() < 2) {
+		output = input;
+		return;
+	}
+	vector C = {0, 0};
+	NThBitCount(C, input, n);
+}
+
 int main(const int argc, const char* argv[]) {
 	vector<unsigned char> I;
 	if (argc != 2) {
