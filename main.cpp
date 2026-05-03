@@ -62,10 +62,10 @@ void BinaryRadixSort(vector<unsigned char> &input, vector<unsigned char> &output
 int main(const int argc, const char* argv[]) {
 	vector<unsigned char> A, B;
 	if (argc != 2) {
-		return 0;
+		return 1;
 	}
 	if (!ReadNumbers(A, argv[1])) {
-		return 0;
+		return 1;
 	}
 	B.resize(A.size());
 

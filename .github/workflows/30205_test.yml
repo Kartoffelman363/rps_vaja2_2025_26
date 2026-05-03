@@ -1,0 +1,30 @@
+name: BinaryRadixSort_test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      # Iz marketplace get-cmake quickstart https://github.com/marketplace/actions/get-cmake
+      # Suited for self-hosted GH runners where the local cache wins over the cloud.
+      - uses: lukka/get-cmake@latest
+        with:
+          useLocalCache: true         # <--= Use the local cache (default is 'false').
+          useCloudCache: false        # <--= Ditch the cloud cache (default is 'true').
+
+      - name: Zbuildaj s cmake
+        run: |
+          cmake -S . -B build
+          cmake --build build
+
+      - name: Pripravi za test
+        run: cp ./build/binaryRadixSort ./test/.
+
+      - name: Zaženi program
+        run: ./test/binaryRadixSort ./test_data/regular/primer_vhoda.txt
+
+      - name: Cataj out.txt
+        run: cat ./test/out.txt
