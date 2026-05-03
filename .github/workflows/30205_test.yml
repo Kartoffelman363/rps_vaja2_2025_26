@@ -8,6 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+
       # Iz marketplace get-cmake quickstart https://github.com/marketplace/actions/get-cmake
       # Suited for self-hosted GH runners where the local cache wins over the cloud.
       - uses: lukka/get-cmake@latest
@@ -17,6 +18,7 @@ jobs:
 
       - name: Zbuildaj s cmake
         run: |
+          rm -rf ./build
           cmake -S . -B build
           cmake --build build
 
@@ -24,7 +26,24 @@ jobs:
         run: cp ./build/binaryRadixSort ./test/.
 
       - name: Zaženi program
-        run: ./test/binaryRadixSort ./test_data/regular/primer_vhoda.txt
+        working-directory: test
+        run: |
+          echo "" > napaka.txt
+          for dir in ./test_data/*
+          do
+            echo Checking $dir
+            # Generates out.txt
+            ./binaryRadixSort $dir/primer_vhoda.txt
+            # Compare out.txt with primer_izhoda.txt and write to napaka.txt if they differ
+            if ! diff -Z $dir/primer_izhoda.txt ./out.txt
+            then
+              echo Primer $dir se ne ujema z izhodnimi podatki >> napaka.txt
+            fi
+          done
 
-      - name: Cataj out.txt
-        run: cat ./test/out.txt
+      - name: Cataj napaka.txt
+        working-directory: test
+        run: |
+          ls -R
+          echo napaka.txt:
+          echo $(cat napaka.txt)

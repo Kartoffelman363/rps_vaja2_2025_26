@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -11,8 +12,7 @@ bool ReadNumbers(vector<unsigned char> &vec, const char s[]) {
 		return false;
 	}
 
-	while (!input.eof()) {
-		input >> num;
+	while (input >> num) {
 		vec.push_back(num);
 		while (isspace(input.peek())) input.get();
 	}
@@ -20,9 +20,7 @@ bool ReadNumbers(vector<unsigned char> &vec, const char s[]) {
 	return true;
 }
 
-void OutputNumbers(const unsigned char* numbers, const unsigned int size) {
-	ofstream output("out.txt");
-
+void OutputNumbers(const unsigned char* numbers, const unsigned int size, ofstream &output) {
 	for (int i = 0; i<size; i++)
 		output << static_cast<int>(numbers[i]) << ' ';
 }
@@ -67,10 +65,14 @@ int main(const int argc, const char* argv[]) {
 	if (!ReadNumbers(A, argv[1])) {
 		return 1;
 	}
+	ofstream output("out.txt");
+	if (A.empty()) {
+		return 0;
+	}
 	B.resize(A.size());
 
 	BinaryRadixSort(A, B);
 
-	OutputNumbers(&B[0],B.size());
+	OutputNumbers(&B[0],B.size(), output);
 	return 0;
 }
